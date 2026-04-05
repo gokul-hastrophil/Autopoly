@@ -11,42 +11,7 @@ from backend.services.supabase_client import get_supabase
 from backend.services.polymarket_client import fetch_open_markets
 from backend.services.groq_service import analyze_market
 from backend.services.telegram_service import broadcast_signal
-from backend.bot.utils import safe_float, is_within_days, parse_outcome_prices
-
-
-def load_config(supabase) -> dict:
-    """Load strategy config from DB."""
-    result = supabase.table("strategy_config").select("key, value").execute()
-    config = {row["key"]: row["value"] for row in (result.data or [])}
-    required = ["bond_threshold", "volume_min", "close_window_days", "ai_confidence_min"]
-    missing = [k for k in required if k not in config]
-    if missing:
-        print(f"ERROR: Missing strategy_config keys: {missing}")
-        sys.exit(1)
-    return config
-
-
-def find_qualifying_markets(markets: list[dict], config: dict) -> list[dict]:
-    """Filter markets matching bond strategy criteria."""
-    threshold = safe_float(config["bond_threshold"], 0.93)
-    volume_min = safe_float(config["volume_min"], 5000)
-    close_days = int(config.get("close_window_days", 7))
-
-    qualifying = []
-    for m in markets:
-        prices = parse_outcome_prices(m.get("outcomePrices", "[]"))
-        if not prices or max(prices) < threshold:
-            continue
-        volume = safe_float(m.get("volume", 0))
-        if volume < volume_min:
-            continue
-        end_date = m.get("endDate") or m.get("end_date_iso", "")
-        if not end_date or not is_within_days(end_date, close_days):
-            continue
-        qualifying.append(m)
-
-    print(f"Found {len(qualifying)} qualifying markets")
-    return qualifying
+from backend.bot.utils import safe_float, is_within_days, parse_outcome_prices, load_strategy_config, find_qualifying_markets
 
 
 def process_market(supabase, market: dict, config: dict) -> bool:
@@ -177,7 +142,7 @@ def main():
     print("=== Autopoly Paper Trader ===")
     supabase = get_supabase()
 
-    config = load_config(supabase)
+    config = load_strategy_config(supabase)
     print(f"Config: threshold={config['bond_threshold']}, volume_min={config['volume_min']}")
 
     print("Fetching open markets...")
