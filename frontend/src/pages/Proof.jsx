@@ -4,6 +4,7 @@ import { useRealtimeTrades } from '../hooks/useSupabase'
 import PnLChart from '../components/PnLChart'
 import WinRate from '../components/WinRate'
 import SignalFeed from '../components/SignalFeed'
+import Navbar from '../components/Navbar'
 
 export default function Proof() {
   const [proofData, setProofData] = useState(null)
@@ -27,8 +28,9 @@ export default function Proof() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[var(--bg-primary)] p-8">
-        <div className="max-w-6xl mx-auto">
+      <div className="min-h-screen bg-[var(--bg-primary)]">
+        <Navbar />
+        <div className="max-w-6xl mx-auto p-8">
           <h1 className="text-3xl font-bold mb-8">Performance Proof</h1>
           <div className="grid gap-6">
             {[1,2,3].map(i => (
@@ -41,8 +43,9 @@ export default function Proof() {
   }
 
   return (
-    <div className="min-h-screen bg-[var(--bg-primary)] p-8">
-      <div className="max-w-6xl mx-auto">
+    <div className="min-h-screen bg-[var(--bg-primary)]">
+      <Navbar />
+      <div className="max-w-6xl mx-auto p-8">
         <h1 className="text-3xl font-bold mb-2">Performance Proof</h1>
         <p className="text-[var(--text-secondary)] mb-8">
           Real backtest data from 90+ days of Polymarket history. Updated approximately every 5-15 minutes.
