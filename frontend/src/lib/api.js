@@ -1,8 +1,8 @@
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000'
 
-async function fetchJSON(path) {
+async function fetchJSON(path, options = {}) {
   try {
-    const res = await fetch(`${API_URL}${path}`)
+    const res = await fetch(`${API_URL}${path}`, options)
     if (!res.ok) throw new Error(`HTTP ${res.status}`)
     return { data: await res.json(), error: null }
   } catch (e) {
@@ -17,6 +17,13 @@ export const fetchSignals = (tier = 'free') => fetchJSON(`/api/signals?tier=${ti
 // Paper trading (public, no auth needed)
 export const fetchPaperPositions = (status = 'all') => fetchJSON(`/api/paper/positions?status=${status}`)
 export const fetchPaperSummary = () => fetchJSON('/api/paper/summary')
+
+// Live markets
+export const fetchMarkets = (category = 'all', sort = 'volume', limit = 50) =>
+  fetchJSON(`/api/markets?category=${category}&sort=${sort}&limit=${limit}`)
+export const fetchMarketDetail = (id) => fetchJSON(`/api/markets/${id}`)
+export const executePaperTrade = (marketId, side, amount) =>
+  fetchJSON(`/api/paper/trade?market_id=${marketId}&side=${side}&amount=${amount}`, { method: 'POST' })
 
 // Authenticated fetch helper
 async function fetchWithAuth(path, options = {}) {

@@ -13,6 +13,7 @@ from backend.routers.signals import router as signals_router
 from backend.routers.auth import router as auth_router
 from backend.routers.webhook import router as webhook_router
 from backend.routers.trading import router as trading_router
+from backend.routers.markets import router as markets_router
 from backend.services.rate_limiter import limiter
 from slowapi import _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
@@ -44,6 +45,7 @@ app.include_router(signals_router, prefix="/api")
 app.include_router(auth_router, prefix="/api")
 app.include_router(webhook_router, prefix="/api")
 app.include_router(trading_router, prefix="/api")
+app.include_router(markets_router, prefix="/api")
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
