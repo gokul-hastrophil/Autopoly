@@ -133,7 +133,7 @@ def persist_signals(supabase, signals: list[dict]) -> int:
         try:
             supabase.table("signals").upsert(
                 signal,
-                on_conflict="market_id,signal_type,(created_at::date)",
+                on_conflict="market_id,signal_type,signal_date",
             ).execute()
             saved += 1
         except Exception as e:

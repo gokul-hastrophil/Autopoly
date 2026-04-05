@@ -111,7 +111,7 @@ def process_market(supabase, market: dict, config: dict) -> bool:
         "reasoning": ai_result["reasoning"][:500],
         "ai_verified": ai_verified,
         "expires_at": end_date,
-    }, on_conflict="market_id,signal_type,(created_at::date)").execute()
+    }, on_conflict="market_id,signal_type,signal_date").execute()
 
     # Telegram alerts
     subscribers = supabase.table("subscribers").select("telegram_chat_id").not_.is_(

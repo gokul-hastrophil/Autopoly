@@ -55,13 +55,11 @@ CREATE TABLE signals (
   confidence NUMERIC NOT NULL,
   reasoning TEXT,
   ai_verified BOOLEAN DEFAULT TRUE,
+  signal_date DATE DEFAULT CURRENT_DATE,
   expires_at TIMESTAMPTZ,
-  created_at TIMESTAMPTZ DEFAULT NOW()
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  UNIQUE(market_id, signal_type, signal_date)
 );
-
--- Functional index for ON CONFLICT with DATE expression
-CREATE UNIQUE INDEX idx_signals_market_type_date
-  ON signals (market_id, signal_type, (DATE(created_at)));
 
 -- 5. subscribers
 CREATE TABLE subscribers (
