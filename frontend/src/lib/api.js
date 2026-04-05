@@ -14,6 +14,10 @@ export const fetchAnalytics = () => fetchJSON('/api/analytics')
 export const fetchProof = () => fetchJSON('/api/proof')
 export const fetchSignals = (tier = 'free') => fetchJSON(`/api/signals?tier=${tier}`)
 
+// Paper trading (public, no auth needed)
+export const fetchPaperPositions = (status = 'all') => fetchJSON(`/api/paper/positions?status=${status}`)
+export const fetchPaperSummary = () => fetchJSON('/api/paper/summary')
+
 // Authenticated fetch helper
 async function fetchWithAuth(path, options = {}) {
   const { getAccessToken } = await import('./auth')
